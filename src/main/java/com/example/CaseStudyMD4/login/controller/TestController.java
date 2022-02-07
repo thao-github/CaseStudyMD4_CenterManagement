@@ -1,4 +1,4 @@
-package com.example.CaseStudyMD4.object.controller;
+package com.example.CaseStudyMD4.login.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/home")
-public class SecurityController {
+@RequestMapping("/api/test")
+public class TestController {
     @GetMapping("/all")
     public String allAccess() {
         return "Public Content.";
