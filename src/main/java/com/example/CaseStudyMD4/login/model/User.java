@@ -14,6 +14,8 @@ import javax.validation.constraints.Size;
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "TYPE")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
