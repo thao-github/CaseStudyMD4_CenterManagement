@@ -1,14 +1,15 @@
 package com.example.CaseStudyMD4.login.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "user",
+@Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
@@ -19,7 +20,7 @@ public class User {
     private Long id;
 
     @NotBlank
-    @Size(max = 30)
+    @Size(max = 20)
     private String username;
 
     @NotBlank
@@ -44,14 +45,6 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-    }
-
-    public User(Long id, String username, String email, String password, Set<Role> roles) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
     }
 
     public Long getId() {

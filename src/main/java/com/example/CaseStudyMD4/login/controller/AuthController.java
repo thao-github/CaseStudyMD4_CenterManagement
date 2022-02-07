@@ -7,17 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import com.example.CaseStudyMD4.login.model.ERole;
-import com.example.CaseStudyMD4.login.model.Role;
-import com.example.CaseStudyMD4.login.model.User;
-import com.example.CaseStudyMD4.login.payload.request.LoginRequest;
-import com.example.CaseStudyMD4.login.payload.request.SignUpRequest;
-import com.example.CaseStudyMD4.login.payload.response.InfoResponse;
-import com.example.CaseStudyMD4.login.payload.response.MessageResponse;
-import com.example.CaseStudyMD4.login.repository.RoleRepo;
-import com.example.CaseStudyMD4.login.repository.UserRepo;
-import com.example.CaseStudyMD4.login.security.jwt.JwtUtils;
-import com.example.CaseStudyMD4.login.security.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -33,6 +22,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.CaseStudyMD4.login.model.ERole;
+import com.example.CaseStudyMD4.login.model.Role;
+import com.example.CaseStudyMD4.login.model.User;
+import com.example.CaseStudyMD4.login.payload.request.LoginRequest;
+import com.example.CaseStudyMD4.login.payload.request.SignupRequest;
+import com.example.CaseStudyMD4.login.payload.response.UserInfoResponse;
+import com.example.CaseStudyMD4.login.payload.response.MessageResponse;
+import com.example.CaseStudyMD4.login.repository.RoleRepository;
+import com.example.CaseStudyMD4.login.repository.UserRepository;
+import com.example.CaseStudyMD4.login.security.jwt.JwtUtils;
+import com.example.CaseStudyMD4.login.security.service.UserDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -42,10 +42,10 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepo userRepo;
+    UserRepository userRepository;
 
     @Autowired
-    RoleRepo roleRepo;
+    RoleRepository roleRepository;
 
     @Autowired
     PasswordEncoder encoder;
@@ -66,23 +66,23 @@ public class AuthController {
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(object -> object.getAuthority())
+                .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new InfoResponse(userDetails.getId(),
+                .body(new UserInfoResponse(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
                         roles));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if (userRepo.existsByUsername(signUpRequest.getUsername())) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        if (userRepo.existsByEmail(signUpRequest.getEmail())) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
         }
 
@@ -95,20 +95,26 @@ public class AuthController {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
-            Role userRole = roleRepo.findByName(ERole.ROLE_USER)
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleRepo.findByName(ERole.ROLE_ADMIN)
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
-                        break;
 
+                        break;
+                    case "mod":
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(modRole);
+
+                        break;
                     default:
-                        Role userRole = roleRepo.findByName(ERole.ROLE_USER)
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(userRole);
                 }
@@ -116,7 +122,7 @@ public class AuthController {
         }
 
         user.setRoles(roles);
-        userRepo.save(user);
+        userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
@@ -128,5 +134,3 @@ public class AuthController {
                 .body(new MessageResponse("You've been signed out!"));
     }
 }
-
-

@@ -1,11 +1,11 @@
 package com.example.CaseStudyMD4.login.security.jwt;
 
+
 import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.example.CaseStudyMD4.login.security.service.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
+import com.example.CaseStudyMD4.login.security.service.UserDetailsImpl;
 import io.jsonwebtoken.*;
 
 @Component
@@ -67,6 +68,7 @@ public class JwtUtils {
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
+
         return false;
     }
 
