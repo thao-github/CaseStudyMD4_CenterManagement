@@ -29,8 +29,8 @@ import com.example.CaseStudyMD4.login.payload.request.LoginRequest;
 import com.example.CaseStudyMD4.login.payload.request.SignupRequest;
 import com.example.CaseStudyMD4.login.payload.response.UserInfoResponse;
 import com.example.CaseStudyMD4.login.payload.response.MessageResponse;
-import com.example.CaseStudyMD4.login.repository.RoleRepo;
-import com.example.CaseStudyMD4.login.repository.UserRepo;
+import com.example.CaseStudyMD4.login.repository.RoleRepository;
+import com.example.CaseStudyMD4.login.repository.UserRepository;
 import com.example.CaseStudyMD4.login.security.jwt.JwtUtils;
 import com.example.CaseStudyMD4.login.security.service.UserDetailsImpl;
 
@@ -42,10 +42,10 @@ public class AuthController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserRepo userRepository;
+    UserRepository userRepository;
 
     @Autowired
-    RoleRepo roleRepository;
+    RoleRepository roleRepository;
 
     @Autowired
     PasswordEncoder encoder;

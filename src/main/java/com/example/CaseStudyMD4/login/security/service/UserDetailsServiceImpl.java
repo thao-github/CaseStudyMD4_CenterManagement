@@ -1,7 +1,7 @@
 package com.example.CaseStudyMD4.login.security.service;
 
 import com.example.CaseStudyMD4.login.model.User;
-import com.example.CaseStudyMD4.login.repository.UserRepo;
+import com.example.CaseStudyMD4.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    UserRepo userRepository;
+    UserRepository userRepository;
 
     @Override
     @Transactional
